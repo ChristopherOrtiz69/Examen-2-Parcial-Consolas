@@ -3,18 +3,22 @@ using TMPro;
 
 public class ScoreManager : MonoBehaviour
 {
-    public int[] lives = new int[4]; 
-    public TextMeshProUGUI[] lifeTexts; 
-    public RaycastManager[] raycastManagers; 
+    public int[] lives = new int[4];
+    public TextMeshProUGUI[] lifeTexts;
+    public GameObject[] playerObjects; 
+    public GameObject[] substituteObjects; 
+    public TextMeshProUGUI winnerText;
+
+    private int playersWithLives = 4;
 
     void Start()
     {
-       
         for (int i = 0; i < lives.Length; i++)
         {
-            lives[i] = 15;
+            lives[i] = 2;
             UpdateLifeText(i);
         }
+        winnerText.gameObject.SetActive(false);
     }
 
     public void DecreaseLife(int playerIndex)
@@ -24,10 +28,16 @@ public class ScoreManager : MonoBehaviour
             lives[playerIndex]--;
             UpdateLifeText(playerIndex);
 
-            
             if (lives[playerIndex] <= 0)
             {
-                StopGame(playerIndex);
+                playersWithLives--;
+                playerObjects[playerIndex].SetActive(false); 
+                substituteObjects[playerIndex].SetActive(true); 
+
+                if (playersWithLives <= 1)
+                {
+                    StopGame();
+                }
             }
         }
     }
@@ -40,11 +50,26 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    private void StopGame(int playerIndex)
+    private void StopGame()
     {
-        
-        Debug.Log("Jugador " + playerIndex + " ha llegado a 0 vidas. El juego se detiene.");
-      
+        winnerText.gameObject.SetActive(true); 
+        int winnerIndex = FindWinner(); 
+        if (winnerIndex >= 0)
+        {
+            winnerText.text = "Ganador: Jugador " + (winnerIndex + 1);
+        }
+
+        Debug.Log("El juego se detiene.");
         Time.timeScale = 0; 
     }
+
+    private int FindWinner()
+    {
+        for (int i = 0; i < lives.Length; i++)
+        {
+            if (lives[i] > 0) return i; 
+        }
+        return -1;
+    }
 }
+

@@ -40,6 +40,9 @@ public class BouncingBall : MonoBehaviour
         Vector3 bounceDirection = Vector3.Reflect(rb.velocity.normalized, collision.contacts[0].normal);
         bounceDirection.y = 0;
         bounceDirection += collision.contacts[0].normal * 0.1f;
-        rb.velocity = bounceDirection.normalized * speed * bounceMultiplier;
+
+       
+        speed *= bounceMultiplier; 
+        rb.velocity = bounceDirection.normalized * speed; 
     }
 }
