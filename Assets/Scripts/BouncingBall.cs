@@ -2,21 +2,22 @@ using UnityEngine;
 
 public class BouncingBall : MonoBehaviour
 {
-    public float speed = 5f; 
-    public float bounceMultiplier = 1.1f; 
-    public Transform targetPoint; 
-    private Rigidbody rb; 
-    private bool hasStartedMoving = false; 
+    public float speed = 5f;
+    public float bounceMultiplier = 1.1f;
+    public Transform targetPoint;
+    private Rigidbody rb;
+    private bool hasStartedMoving = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous; 
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rb.useGravity = true;
         if (targetPoint != null)
         {
             Vector3 direction = (targetPoint.position - transform.position).normalized;
-            rb.velocity = direction * speed; 
-            hasStartedMoving = true; 
+            rb.velocity = direction * speed;
+            hasStartedMoving = true;
         }
     }
 
@@ -24,7 +25,7 @@ public class BouncingBall : MonoBehaviour
     {
         if (hasStartedMoving)
         {
-            rb.velocity = rb.velocity.normalized * speed; 
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z).normalized * speed;
         }
     }
 
@@ -33,17 +34,12 @@ public class BouncingBall : MonoBehaviour
         if (collision.gameObject.CompareTag("Ball"))
         {
             Physics.IgnoreCollision(collision.collider, rb.GetComponent<Collider>());
-            return; 
+            return;
         }
 
-       
         Vector3 bounceDirection = Vector3.Reflect(rb.velocity.normalized, collision.contacts[0].normal);
-
-       
         bounceDirection.y = 0;
-
-        bounceDirection += collision.contacts[0].normal * 0.1f; 
-      
-        rb.velocity = bounceDirection.normalized * speed * bounceMultiplier; 
+        bounceDirection += collision.contacts[0].normal * 0.1f;
+        rb.velocity = bounceDirection.normalized * speed * bounceMultiplier;
     }
 }
