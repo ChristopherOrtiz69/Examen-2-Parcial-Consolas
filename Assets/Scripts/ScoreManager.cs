@@ -15,7 +15,7 @@ public class ScoreManager : MonoBehaviour
     {
         for (int i = 0; i < lives.Length; i++)
         {
-            lives[i] = 2;
+            lives[i] = 15;
             UpdateLifeText(i);
         }
         winnerText.gameObject.SetActive(false);
